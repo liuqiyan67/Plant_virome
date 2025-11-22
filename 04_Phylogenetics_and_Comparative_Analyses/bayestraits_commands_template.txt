@@ -1,0 +1,11 @@
+1
+2
+Seed 12345
+RJHP exp 0 100
+it 1000000000
+Burnin 60000000
+Sample 1000
+LogFile some_log_file.name.log.txt
+ScaleTrees
+cores 12
+Run

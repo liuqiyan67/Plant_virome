@@ -1,27 +1,24 @@
-# Directory 01: Virus Discovery and Preprocessing
+# 01_virus_discovery
 
-This directory contains the scripts and commands documenting the initial pipeline for discovering viral contigs from raw transcriptome data and performing their initial taxonomic annotation.
+this directory contains scripts documenting the initial pipeline for discovering viral contigs from raw transcriptome data and performing their initial taxonomic annotation.
 
-## Workflow Overview
+## workflow overview
 
-The overall process described in the main manuscript's Methods section can be broken down into the following conceptual stages. The key commands and parameters for the most complex stages are provided in the scripts within this directory.
+the overall process involves three main conceptual stages. the key commands and parameters for the most complex steps are provided in the scripts within this directory.
 
-##1. De Novo Assembly:##
-Raw SRA reads were assembled using Trinity. This is a standard procedure, and an example command is provided within 'pipeline_virus_identification.sh'.
+1.  **de novo assembly**: raw sra reads were assembled using trinity.
+2.  **virus identification and filtering**: a multi-step process including:
+    *   removal of host and rrna sequences.
+    *   filtering of contigs by length (>1000 nt).
+    *   iterative blastp-based search to identify rdrp-containing contigs.
+    *   manual curation and contamination checks.
+    *   final re-assembly of fragmented contigs using cap3.
+3.  **taxonomic annotation**: all identified rdrp protein sequences were subjected to a formal clustering analysis using mcl to assign broad taxonomic affiliations.
 
-##2. Virus Identification and Filtering:##
-This multi-step process is documented in the script 'pipeline_virus_identification.sh'. It includes:
-#   Removal of host and rRNA sequences.
-#   Filtering of contigs by length (>1000 nt).
-#   An iterative BLASTp-based search to identify RdRP-containing contigs.
-#   Manual curation and contamination checks.
-#   Final re-assembly of fragmented contigs using CAP3.
+## script descriptions
 
-##3. Taxonomic Annotation via MCL Clustering:##
-All identified RdRp protein sequences (from this study and reference databases) were then subjected to a formal clustering analysis to assign broad taxonomic affiliations. The complete workflow for this is documented in the script '06_run_mcl_for_taxonomy.sh'.
+*   **`pipeline_virus_identification.sh`**:
+    this is a documentation script that outlines the sequence of commands used for the initial virus discovery pipeline, from assembly to the final set of viral contigs. it is intended as a methodological guide and is not for direct execution.
 
-## Script Details
-
-#   ##'pipeline_virus_identification.sh'##: This is a ##documentation script## that outlines the sequence of commands used for the initial virus discovery pipeline, from assembly to the final set of viral contigs. It is not intended for direct execution without modification.
-
-#   ##'run_mcl_for_taxonomy.sh'##: This script documents the specific workflow for performing the all-vs-all DIAMOND search and subsequent MCL clustering to assign taxonomic groups to the identified RdRp sequences.
+*   **`run_mcl_for_taxonomy.sh`**:
+    documents the specific workflow for performing the all-vs-all diamond blastp search and subsequent mcl clustering to assign taxonomic groups to the identified rdrp sequences.

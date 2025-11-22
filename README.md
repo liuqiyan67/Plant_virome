@@ -25,7 +25,7 @@ The following major software tools were used in this study. Please refer to the 
 
 *   **data processing**: python 3, r, pandas, tidyverse
 *   **assembly & identification**: trinity, diamond, mmseqs2
-*   **phylogenetics**: iq-tree 2, mafft, trimal
+*   **phylogenetics**: iqtree, mafft, trimal
 *   **comparative analysis**: bayestraits v4, dalilite
 *   **visualization**: ggplot2, igraph, itol
 
@@ -36,4 +36,5 @@ All raw data, intermediate files (such as alignments and tree files), and final 
 ## Contact
 
 For questions regarding the code or analysis, please contact Guan-Zhu Han at guanzhu@njnu.edu.cn
+
 

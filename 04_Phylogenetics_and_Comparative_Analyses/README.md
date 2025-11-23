@@ -1,4 +1,4 @@
-# 04_phylogenetics_and_comparative_analyses
+# 04_phylogenetics_analyses
 
 this directory contains workflows for phylogenetic inference, structural comparison of viral proteins, and bayesian estimation of host transition rates.
 
@@ -17,4 +17,5 @@ this directory contains workflows for phylogenetic inference, structural compari
     a wrapper script that automates the execution of bayestraits v4 for multiple phylogenetic trees. it demonstrates how to run the reversible-jump mcmc (rj-mcmc) analysis for estimating transition rates.
 
 *   **`bayestraits_commands_template.txt`**:
+
     the template input file containing the specific parameters and priors used for the bayestraits analysis (e.g., iterations, burn-in, rjhp settings).

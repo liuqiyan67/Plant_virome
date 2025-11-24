@@ -1,4 +1,4 @@
-# Analysis pipeline for "the origins and evolution of the RNA virome in land flora"
+# Analysis pipeline for "The Origins and Evolution of the RNA Virome in Land Flora"
 
 This repository contains the custom analysis scripts and bioinformatic workflows used in the manuscript.
 
@@ -36,5 +36,6 @@ All raw data, intermediate files (such as alignments and tree files), and final 
 ## Contact
 
 For questions regarding the code or analysis, please contact Guan-Zhu Han at guanzhu@njnu.edu.cn
+
 
 

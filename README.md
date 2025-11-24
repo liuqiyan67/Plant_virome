@@ -31,11 +31,12 @@ The following major software tools were used in this study. Please refer to the 
 
 ## Data availability
 
-All raw data, intermediate files (such as alignments and tree files), and final result tables associated with this study are publicly available at our figshare repository: https://figshare.com/s/404e77121795e94cce7a
+All raw data, intermediate files (such as alignments and tree files), and final result tables associated with this study are publicly available at our figshare repository: https://figshare.com/s/07adade8e5fcdde69d2d
 
 ## Contact
 
 For questions regarding the code or analysis, please contact Guan-Zhu Han at guanzhu@njnu.edu.cn
+
 
 
 

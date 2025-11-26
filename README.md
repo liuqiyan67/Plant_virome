@@ -14,29 +14,27 @@ The scripts provided here are intended to document the computational methods use
 
 The analysis is organized into four main stages, corresponding to the numbered directories:
 
-*   **01_virus_discovery**: pipeline for de novo assembly and identification of viral contigs from transcriptome data.
-*   **02_quality_control**: the multi-tiered framework for assessing host veracity, including library purity checks and siRNA validation.
-*   **03_diversity_and_network_analyses**: scripts for clustering, rarefaction analysis, and constructing sequence similarity networks.
-*   **04_phylogenetics_and_comparative_analyses**: workflows for phylogenetic tree inference, structural comparisons, and bayesian transition rate estimation.
+ **01_virus_discovery**: pipeline for de novo assembly and identification of viral contigs from transcriptome data.
+ **02_quality_control**: the multi-tiered framework for assessing host veracity, including library purity checks and siRNA validation.
+ **03_diversity_and_network_analyses**: scripts for clustering, rarefaction analysis, and constructing sequence similarity networks.
+ **04_phylogenetics_and_comparative_analyses**: workflows for phylogenetic tree inference, structural comparisons, and bayesian transition rate estimation.
 
 ## Software dependencies
 
 The following major software tools were used in this study. Please refer to the methods section of the manuscript for specific version numbers.
 
-*   **data processing**: python 3, r, pandas, tidyverse
-*   **assembly & identification**: trinity, diamond, mmseqs2
-*   **phylogenetics**: iqtree, mafft, trimal
-*   **comparative analysis**: bayestraits v4, dalilite
-*   **visualization**: ggplot2, igraph, itol
+ **data processing**: python 3, r, pandas, tidyverse
+ **assembly & identification**: trinity, diamond, mmseqs2
+ **phylogenetics**: iqtree, mafft, trimal
+ **comparative analysis**: bayestraits v4, dalilite
+ **visualization**: ggplot2, igraph, itol
 
 ## Data availability
 
-All raw data, intermediate files (such as alignments and tree files), and final result tables associated with this study are publicly available at our figshare repository: https://figshare.com/s/07adade8e5fcdde69d2d
+All raw data, intermediate files (such as alignments and tree files), and final result tables associated with this study are publicly available at our figshare repository (**DOI: 10.6084/m9.figshare.30688322**)
+
 
 ## Contact
 
 For questions regarding the code or analysis, please contact Guan-Zhu Han at guanzhu@njnu.edu.cn
-
-
-
 

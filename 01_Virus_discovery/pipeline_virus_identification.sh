@@ -4,24 +4,20 @@
 # SCRIPT: pipeline_virus_identification.sh
 #
 # PURPOSE:
-# This script documents the key bioinformatic steps for the discovery
-# and processing of viral contigs from transcriptome data, as described in
-# our manuscript. It is intended as a guide to the methodology, not as a
-
-# fully automated pipeline.
+# This script documents the exact bioinformatic commands and parameters used 
+# for the discovery and processing of viral contigs from transcriptome data.
 #
-# Each step represents a conceptual stage of the analysis, with example
-# commands provided.
+# NOTE ON REPRODUCIBILITY:
+# The commands below represent the actual, functional code executed in our
+# HPC environment. File paths and thread counts are specific to our server
+# and should be adjusted by the user.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-echo "--- This is a documentation script, not intended for direct execution without modification. ---"
-echo "--- Please see the README and individual comments for context. ---"
 
 # =============================================================================
 # Step 1: De novo transcriptome assembly
 # =============================================================================
 # Raw paired-end and single-end reads from selected SRA libraries were
-# assembled using Trinity after quality control with Trimmomatic.
+# assembled using Trinity v2.14.0 after quality control with Trimmomatic v0.39.
 
 # Example command for a paired-end library:
 Trinity --seqType fq --max_memory 150G --left PAIRED_1.fastq --right PAIRED_2.fastq \
@@ -35,49 +31,58 @@ Trinity --seqType fq --max_memory 150G --single SINGLE.fastq \
 # =============================================================================
 # Step 2: Initial contig filtering and processing
 # =============================================================================
-# Assembled contigs from all sources were combined and subjected to a
-# series of filtering steps to remove non-viral and redundant sequences.
+# Assembled contigs from all sources were combined and subjected to filtering.
 
-# Assumed starting file: all_assembled_contigs.fasta
+# --- A. Removal of rRNA sequences ---
+# rRNA sequences were removed by matching the IMG metarRNA database.
+# Software: BLAST+ v2.12.0
+nohup parallel -j 20 --xapply 'blastn -db /path/to/database/metaSSU_LSU_IMG_IMG/metaSSU_LSU_IMG90_dna.fa -query {1} -out {1}.rrna.out -num_threads 5 -evalue 0.00001 -max_target_seqs 5 -outfmt 6' ::: *.fa &
 
-# --- A. Removal of host and rRNA contigs (Conceptual) ---
-# Host-like contigs were identified by BLASTx against the NCBI nr database and removed.
-# (Example command not shown for brevity, as it's a standard procedure).
+# --- B. Removal of host contigs ---
+# Host-like contigs were identified by BLASTx against the NCBI nr database.
+# Software: Diamond v2.0.15
+nohup parallel -j 10 --xapply 'diamond blastx --db /path/to/database/nr_db/nr_diamond.dmnd --max-target-seqs 5 --fast --threads 100 --outfmt 6 qseqid sseqid staxids sskingdoms skingdoms sphylums sscinames stitle evalue qstart qend sstart send pident length bitscore mismatch gapopen --query {1} --out {1}.diamond_nr_out' ::: *.fa &
 
-# --- B. Filter by length ---
+# Note: Contigs with significant hits to non-viral eukaryotic taxa in the nr output 
+# were subsequently filtered out using custom parsing scripts.
+
+# --- C. Filter by length ---
 # Contigs shorter than 1000 nt were excluded to enrich for more complete genomes.
-echo "Step 2B: Filtering contigs by length..."
+# Software: seqkit v2.3.0
 seqkit seq -m 1000 non_host_contigs.fasta > contigs_gt1000.fasta
 
-# --- C. Cluster at 99% identity ---
+# --- D. Cluster at 99% identity ---
 # The filtered contigs were clustered to create a set of representative sequences.
-echo "Step 2C: Clustering contigs at 99% identity..."
+# Software: CD-HIT v4.8.1
 cd-hit-est -i contigs_gt1000.fasta -o representative_contigs.fasta -c 0.99
 
 
 # =============================================================================
 # Step 3: Iterative virus identification
 # =============================================================================
-# A five-iteration BLASTp search was performed to identify all potential viral
-# RdRp-containing sequences from the translated representative contigs.
+# A five-iteration BLASTp/BLASTx search was performed to identify all potential viral
+# RdRp-containing sequences.
 
-# First, open reading frames (ORFs) were predicted from the representative contigs.
-# Example using ORFfinder:
-orffinder -in representative_contigs.fasta -ml 450 -out representative_proteins.fasta
+# --- Iteration 1: Initial Search ---
+# Querying representative contigs against NCBI Virus RdRp reference set.
+nohup parallel -j 8 --xapply 'blastx -db ref_rnav_seq.fa -max_target_seqs 100000000 -evalue 0.00001 -num_threads 10 -query {1} -out {1}.orthornavirae.out' ::: *.fas &
 
-# The iterative process is described conceptually below.
-echo "Step 3: Performing iterative BLASTp (conceptual)..."
+# --- Contamination Check (Performed after each iteration) ---
+# Hits from each iteration were rigorously checked for contamination before being
+# used as queries for the next round.
 
-# --- Contamination check within each iteration ---
-# Hits from each iteration were carefully checked for contamination before being
-# used as queries for the next round. This involved two checks:
-echo "  -> Contamination check for iteration hits..."
+# Check 1: Ultra-sensitive Diamond BLASTx against nr database to flag non-viral hits.
+nohup parallel -j 20 --xapply 'diamond blastx --db /path/to/database/nr_db/nr_diamond.dmnd --max-target-seqs 10 --ultra-sensitive --evalue 0.0000000001 --threads 10 --outfmt 6 qseqid sseqid staxids sskingdoms skingdoms sphylums sscinames stitle evalue qstart qend sstart send pident length bitscore mismatch gapopen --query {1} --out {1}.nr_check.out' ::: *.fan &
 
-# Check 1: BLASTp against nr database to flag non-viral hits.
 # Check 2: InterProScan to identify non-viral protein domains.
+# Software: InterProScan v5.65-97.0
+nohup parallel -j 6 --xapply '/path/to/interproscan-5.65-97.0/interproscan.sh --cpu 100 -dp --formats TSV,GFF3 --highmem --seqtype n -i {1}' ::: *.nucl &
 
-# (These outputs were manually inspected to filter out any sequences showing
-# strong hits to non-viral eukaryotic protein families.)
+# Manual Curation Step:
+# The outputs from Diamond and InterProScan were manually inspected. 
+# - Sequences matching RNA viral similarities or relevant domains were retained.
+# - Sequences matching non-viral similarities or domains were removed.
+# - Sequences with no similarities were subjected to online BLAST; those matching non-viral genes were removed.
 
 
 # =============================================================================
@@ -85,7 +90,7 @@ echo "  -> Contamination check for iteration hits..."
 # =============================================================================
 # For specific viral groups where fragmented genomes were suspected,
 # the identified viral contigs were subjected to a final re-assembly step using CAP3.
-echo "Step 4: Performing CAP3 re-assembly on specific subsets..."
-cap3 your_fragment_file.fasta -o 100 -i 98
+# Software: CAP3 (Version date 12/21/07)
+cap3 fragment_file.fasta -o 100 -p 98 > cap3.out
 
-echo "--- Documentation of the main discovery pipeline is complete. ---"
+echo "--- Pipeline execution complete. ---"

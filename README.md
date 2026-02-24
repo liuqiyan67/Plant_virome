@@ -19,15 +19,48 @@ The analysis is organized into four main stages, corresponding to the numbered d
 *   **03_diversity_and_network_analyses**: scripts for clustering, rarefaction analysis, and constructing sequence similarity networks.
 *   **04_phylogenetics_and_comparative_analyses**: workflows for phylogenetic tree inference, structural comparisons, and bayesian transition rate estimation.
 
-## Software dependencies
+## Software Dependencies
 
-The following major software tools were used in this study. Please refer to the methods section of the manuscript for specific version numbers.
+The following software tools and specific versions were used in this study. While these are also listed in the manuscript's Key Resources Table, they are provided here for immediate reference to facilitate environment setup and reproducibility.
 
-*   **data processing**: python 3, r, pandas, tidyverse
-*   **assembly & identification**: trinity, diamond, mmseqs2
-*   **phylogenetics**: iqtree, mafft, trimal
-*   **comparative analysis**: bayestraits v4, dalilite
-*   **visualization**: ggplot2, igraph, itol
+**Quality Control & De Novo Assembly**
+* Trimmomatic v0.39
+* Trinityrnaseq v2.14.0
+* CAP3
+
+**Sequence Processing & Alignment**
+* SeqKit v2.0.0
+* Bowtie2
+* BWA
+* MAFFT
+* trimAl v1.2
+
+**Virus Identification & Similarity Search**
+* Diamond v2.0.15
+* NCBI BLAST+ suite v2.12.0+
+* HMMER v3.3
+
+**Clustering & Taxonomy**
+* CD-HIT v4.8.1
+* MMseqs2 v13.45111
+* MCL v14-137
+
+**Phylogenetics & Evolutionary Analysis**
+* IQ-TREE v2
+* FastTree
+* BayesTraits V4
+
+**Protein Structure Prediction & Comparison**
+* AlphaFold3
+* Phyre2
+* DALI
+
+**Data Processing, Statistics & Visualization**
+* GNU Parallel v1
+* Python 3 (pandas)
+* R (tidyverse, ggplot2, igraph, iNEXT, vegan)
+* iTOL
+* Cirit
 
 ## Data availability
 
@@ -36,6 +69,7 @@ All raw data, intermediate files (such as alignments and tree files), and final 
 ## Contact
 
 For questions regarding the code or analysis, please contact Guan-Zhu Han at guanzhu@njnu.edu.cn
+
 
 
 
